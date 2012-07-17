@@ -3,7 +3,7 @@ uSherpa firmware packet library over serial line test
 17.07.2012 Stefan Wendler
 sw@kaltpost.de
 
-This firmware is for testing "libpacket" over serial line. By doing so, a uSherpa protocol mock is provided. The firmware depends on "libpacket" and "libserial".
+This firmware is for testing packet assembling through "libsherpacore" over serial line. By doing so, a uSherpa protocol mock is provided. The firmware depends on "libserial" and "libconio" from "libemb".
 
 This README describes, how to compile and flash the firmware under Linux.    
 

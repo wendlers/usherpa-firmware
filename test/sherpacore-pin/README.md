@@ -3,7 +3,7 @@ uSherpa firmware core library test
 17.07.2012 Stefan Wendler
 sw@kaltpost.de
 
-This firmware is for testing "libsherpacore". Test results are printed on the serial line. The firmware depends on "libserial", "libsherpacore" and "libconio".
+This firmware is for testing "libsherpacore". Test results are printed on the serial line. The firmware depends on "libserial" and "libconio" from "libemb".
 
 This README describes, how to compile and flash the firmware under Linux.    
 

@@ -3,7 +3,7 @@ uSherpa firmware packet library test
 17.07.2012 Stefan Wendler
 sw@kaltpost.de
 
-This firmware is for testing "libpacket". Test results are printed on the serial line. The firmware depends on "libpacket", "libserial" and "libconio".
+This firmware is for testing packet assembling through "libsherpacore". Test results are printed on the serial line. The firmware depends on "libserial" and "libconio" from "libemb".
 
 This README describes, how to compile and flash the firmware under Linux.    
 
