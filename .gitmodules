@@ -1,0 +1,3 @@
+[submodule "libemb"]
+	path = libemb
+	url = git@github.com:wendlers/libemb.git
