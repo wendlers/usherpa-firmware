@@ -1,7 +1,7 @@
-uSherpa firmware packet library test README
-08.05.2012 Stefan Wendler
+uSherpa firmware packet library test 
+====================================
+17.07.2012 Stefan Wendler
 sw@kaltpost.de
-==========================================================================
 
 This firmware is for testing "libpacket". Test results are printed on the serial line. The firmware depends on "libpacket", "libserial" and "libconio".
 
@@ -27,7 +27,7 @@ Compilation
 
 To compile this firmware issue:
 
-make
+	make
 
 This will produce the firmware "firmware.*" in various formats under the "bin" sub-directory. 
 
@@ -35,7 +35,7 @@ This will produce the firmware "firmware.*" in various formats under the "bin" s
 Flashing
 --------
 
-make flash-target
+	make flash-target
 
 For the MSP430 target on a Launchpad, the "mspdebug" tool is used for flashing. 
 
