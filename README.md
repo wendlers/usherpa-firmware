@@ -12,6 +12,11 @@ was the idea of Alexander Reben).
 
 This README describes, how to compile the firmware binary and flash it to the target MCU under Linux.    
 
+Visit the following documents for more detailed information about:
+
+* [usherpa architecture] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/Architecutre.txt)
+* [usherpa core protocol implementation] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/CoreProtocolImplementation.txt)
+* [usherpa client implementation hints] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/ClientImplementationHints.txt)
 
 Project Directory Layout
 ------------------------
