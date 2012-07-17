@@ -82,13 +82,12 @@ Compilation
 When building the firmware the first time, the git submodule for "libemb" has to be initialized (since the "libemb" subdirectory
 is a stub only otherwise). To initialize the "libemb" submodule, do the following (while in the top-level directory):
 
-	`git submodule init`
-
-	`git submodule update`
+	git submodule init
+	git submodule update
 
 To compile all the libraries, firmware variants and test firmware, change to the top-level directory "firmware" and issue:
 
-	`make`
+	make
 
 This will produce the firmware binares in various formats in the "bin" sub-directory of each variant. i
 Currently the only firmware variant is the "serial-sherpa" firmware located in the directory "serial-sherpa". 
@@ -101,7 +100,7 @@ NOTE: a pre-compiled version of the firmware and some of the tests could always 
 Flashing
 --------
 
-	`make flash-target`
+	make flash-target
 
 For the MSP430 target on a Launchpad, the "mspdebug" tool is used for flashing. 
 
@@ -111,7 +110,7 @@ Generating API Documents
 
 If you installed doxygen on your system, you could generate the HTML-based API documentation by calling:
 
-	`make gen-docs`
+	make gen-docs
 
 This will create the API documentation under "doc/gen/html" within each of the sub-directories of the libraries and 
 firmwares. 
@@ -122,7 +121,7 @@ Applying Code Formating Guidelines
 
 To format all code located in "*.h" and "*.c" files, you could issu the following command in one of the sub-directories:
 
-	`make style` 
+	make style 
 
 This will use "astyle" to format the code in "stroustrup" style.  
 
@@ -133,7 +132,7 @@ Performing Static Code Checks
 To perform static code checks on all files ending with "*.h" or "*.c" , you could issue the following command while in one of the 
 sub-directories:
 
-	`make check` 
+	make check 
 
 This will use "cppcheck" for static code checks and print out the results on the console.  
 
@@ -145,5 +144,6 @@ General build settings (compiler, linker, flags etc.), and settings regarding co
 adjusted in two files on a global basis: 
 
 `common.mk`: This is the common make file shared accross all firmware variants as well as by the test firmware. 
+
 `common_lib.mk`: This is the commen make file shared accross all libraries. 
 
