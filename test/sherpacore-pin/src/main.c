@@ -67,7 +67,17 @@ int main(void)
 
 	cio_print("** uSherpa - librocketcore PIN test **\n\r");
 
-	dump_regs("initial");
+//	dump_regs("initial");
+
+	pin_setup(PIN_2_0, PIN_FUNCTION_OUTPUT);
+	pin_setup(PIN_2_1, PIN_FUNCTION_INPUT_FLOAT);
+	int pl = 0;
+
+	cio_print("reading range finder...");
+	pl = pin_pulselength_read_dhf(PIN_2_1);
+	cio_printf(" OK, pl=%i\n\r", pl);
+
+#if 0
 
 	// invalid port
 	if(pin_setup(0x30, PIN_FUNCTION_OUTPUT) == PIN_STAT_ERR_INVALPORT) {
@@ -260,6 +270,6 @@ int main(void)
 			pin_pwm_control(PIN_2_2, adc2dc(adcin1));
 		}
 	}
-
+#endif
 	return 0;
 }

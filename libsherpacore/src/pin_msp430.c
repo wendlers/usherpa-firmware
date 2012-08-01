@@ -456,11 +456,11 @@ int pin_pulselength_read(unsigned char pin)
 
 int pin_pulselength_read_dhf(unsigned char pin) 
 {
-	int to = 32767;
+	int to = 10000;
 	int t  = 0;
 
 	// time to wait until start reading ...
-	volatile unsigned long i = 1000;
+	volatile unsigned long i = 100;
 
 	int s = 0; 
 
@@ -472,40 +472,79 @@ int pin_pulselength_read_dhf(unsigned char pin)
 	}
 
 	// read initial state of pin 
-	int is = pin_digital_read(pin);
+//	int is = pin_digital_read(pin);
 
+	//
 	// set pin to output
-	if((s = pin_setup(pin, PIN_FUNCTION_OUTPUT)) < 0) return s;
+//	if((s = pin_setup(pin, PIN_FUNCTION_OUTPUT)) < 0) return s;
 
 	// drive the pin high for at least 10us
-	pin_set(pin);
+//	pin_clear(pin);
+//	pin_set(pin);
 
-	do (i--);
-	while (i != 0);
+//	do (i--);
+//	while (i != 0);
 	
 	// drive the pin low
-	pin_clear(pin);
+//	pin_clear(pin);
+
+
+  	P2OUT &= ~BIT0;					// set to LOW                    
+  	P2OUT |=  BIT0;					// set to HIGH                    
+	do (i--);
+	while (i != 0);
+  	P2OUT &= ~BIT0;					// set to LOW                    
 
 	// set the pin back to whatever input it was
-	if((s = pin_setup(pin, pf)) < 0) return s;
+	// if((s = pin_setup(pin, pf)) < 0) return s;
+	
+//	P2DIR &= ~BIT1;					// make sure to clear OUT flag for the pin                 
 
+	int t0 = 0;
+	int ps = P2IN & BIT1;
+
+	while((P2IN & BIT1) != BIT1) {
+		if(t0++ == to) break;
+	}
+	t = 0;
+	while((P2IN & BIT1) == BIT1) {
+		if(t++ == to) break;
+	}
+
+#ifdef PIN_DBG
+	cio_printf("got state changes after %x,  %i, %i\n\r",ps, t0, t);
+#endif
+	
+	return t;
+#if 0
 	// read pulse lenght
-
+	
 	// 1. wait until state changes from initial state to ~initial state 
-   	while(pin_digital_read(pin) == is) {
+   	while((s = pin_digital_read(pin)) == is) {
 		// if max-t is reached, return (timeout)
 		if(t++ == to) return to;
 	}
 
+#ifdef PIN_DBG
+	cio_printf("got state change after %i\n\r", t);
+#endif
+	
 	// 2. wait until state changes back to initial state 
 	t = 0;
 
+#ifdef PIN_DBG
+	cio_printf("waiting for state change 2\n\r");
+#endif
    	while(pin_digital_read(pin) != is) {
 		// if max-t is reached, return (timeout)
 		if(t++ == to) return to;
 	}
-
+#ifdef PIN_DBG
+	cio_printf("got for state change after %x\n\r", t);
+#endif
+	
 	return t;
+#endif
 }
 
 int pin_pwm_function(unsigned char pin, int period)
