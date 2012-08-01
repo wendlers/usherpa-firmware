@@ -26,14 +26,6 @@ int handle_packet_null(unsigned char length, unsigned char *data)
 	return PACKET_STAT_OK;
 }
 
-int handle_packet_reserved(unsigned char length, unsigned char *data)
-{
-	// TODO define + implement
-	send_status_packet(PACKET_RETURN_UNKNOWN);
-
-	return PACKET_STAT_OK;
-}
-
 int handle_packet_system_info(unsigned char length, unsigned char *data)
 {
 	packet_data_out_system_info *pd = (packet_data_out_system_info *)&outp.data[0];
@@ -161,7 +153,16 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 			}
 			break;
 		case PIN_CONTROL_PULSELENGTH_READ:
-			if((s = pin_pulselength_read(pd->pin)) < 0) {
+		case PIN_CONTROL_PULSELENGTH_READ_DHF:
+
+			if(pd->control == PIN_CONTROL_PULSELENGTH_READ) {
+				s = pin_pulselength_read(pd->pin);
+			}
+			else {
+				s = pin_pulselength_read_dhf(pd->pin);
+			}
+
+			if(s < 0) {
 				send_status_packet(PACKET_RETURN_INVALID_PIN_COMMAND);
 			}
 			else {
@@ -233,22 +234,6 @@ int handle_packet_pwm_control(unsigned char length, unsigned char *data)
 	}
 
 	return s;
-}
-
-int handle_packet_serial_function(unsigned char length, unsigned char *data)
-{
-	// TODO define + implement
-	send_status_packet(PACKET_RETURN_UNKNOWN);
-
-	return PACKET_STAT_OK;
-}
-
-int handle_packet_serial_data(unsigned char length, unsigned char *data)
-{
-	// TODO define + implement
-	send_status_packet(PACKET_RETURN_UNKNOWN);
-
-	return PACKET_STAT_OK;
 }
 
 int handle_packet_external_interrupt_function(unsigned char length, unsigned char *data)

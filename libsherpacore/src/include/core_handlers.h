@@ -35,20 +35,6 @@
 int handle_packet_null(unsigned char length, unsigned char *data);
 
 /**
- * Handle in-bound packet of type RESERVED. 
- *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
- *
- * @param	length		length of data in bytes
- * @param	*data		the data part received with the in-bound packet
- * @return				status regarding handling of this packet
- * 						which is allways PACKET_STAT_OK for the RESERVED packet
- */
-int handle_packet_reserved(unsigned char length, unsigned char *data);
-
-/**
  * Handle in-bound packet of type SYSTEM INFO. 
  *
  * For this kind of packet a SYSTEM INFO response with board-type, MCU-type and
@@ -140,34 +126,6 @@ int handle_packet_pwm_function(unsigned char length, unsigned char *data);
  * 						which is allways PACKET_STAT_OK for the PWM CONTROL packet
  */
 int handle_packet_pwm_control(unsigned char length, unsigned char *data);
-
-/**
- * Handle in-bound packet of type SERIAL FUNCTION. 
- *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
- *
- * @param	length		length of data in bytes
- * @param	*data		the data part received with the in-bound packet
- * @return				status regarding handling of this packet
- * 						which is allways PACKET_STAT_OK for the SERIAL FUNCTION packet
- */
-int handle_packet_serial_function(unsigned char length, unsigned char *data);
-
-/**
- * Handle in-bound packet of type SERIAL DATA. 
- *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
- *
- * @param	length		length of data in bytes
- * @param	*data		the data part received with the in-bound packet
- * @return				status regarding handling of this packet
- * 						which is allways PACKET_STAT_OK for the SERIAL DATA packet
- */
-int handle_packet_serial_data(unsigned char length, unsigned char *data);
 
 /**
  * Handle in-bound packet of type EXTERNAL INTERRUPT FUNCTION. 

@@ -23,15 +23,11 @@
 // #include "conio.h"
 
 packet_rcv_handlers packet_handlers = {
-	.count = 9,
+	.count = 8,
 	.handlers = {
 		{ 
 			.type = PACKET_IN_NULL,	
 			.func = handle_packet_null,		
-		},
-		{ 
-			.type = PACKET_IN_RESERVED,
-			.func = handle_packet_reserved,		
 		},
 		{ 
 			.type = PACKET_IN_SYSTEM_INFO,

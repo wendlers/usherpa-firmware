@@ -161,6 +161,12 @@
 #define PIN_CONTROL_PULSELENGTH_READ			0x05
 
 /**
+ * Control command PULSELENGTH READ DRIVE HIGH FIRST for the PIN CONTROL packet
+ */
+#define PIN_CONTROL_PULSELENGTH_READ_DHF		0x06
+
+
+/**
  * IN-bound data for PIN FUNCTION packet
  */
 typedef struct {

@@ -454,6 +454,60 @@ int pin_pulselength_read(unsigned char pin)
 	return t;
 }
 
+int pin_pulselength_read_dhf(unsigned char pin) 
+{
+	int to = 32767;
+	int t  = 0;
+
+	// time to wait until start reading ...
+	volatile unsigned long i = 1000;
+
+	int s = 0; 
+
+	unsigned char pf = pin_function(pin);
+ 
+	if(pf != PIN_FUNCTION_INPUT_FLOAT && pf != PIN_FUNCTION_INPUT_PULLUP && 
+	   pf != PIN_FUNCTION_INPUT_PULLDOWN) { 
+		return PIN_STAT_ERR_UNSUPFUNC;
+	}
+
+	// read initial state of pin 
+	int is = pin_digital_read(pin);
+
+	// set pin to output
+	if((s = pin_setup(pin, PIN_FUNCTION_OUTPUT)) < 0) return s;
+
+	// drive the pin high for at least 10us
+	pin_set(pin);
+
+	do (i--);
+	while (i != 0);
+	
+	// drive the pin low
+	pin_clear(pin);
+
+	// set the pin back to whatever input it was
+	if((s = pin_setup(pin, pf)) < 0) return s;
+
+	// read pulse lenght
+
+	// 1. wait until state changes from initial state to ~initial state 
+   	while(pin_digital_read(pin) == is) {
+		// if max-t is reached, return (timeout)
+		if(t++ == to) return to;
+	}
+
+	// 2. wait until state changes back to initial state 
+	t = 0;
+
+   	while(pin_digital_read(pin) != is) {
+		// if max-t is reached, return (timeout)
+		if(t++ == to) return to;
+	}
+
+	return t;
+}
+
 int pin_pwm_function(unsigned char pin, int period)
 {
 	unsigned char pf = pin_function(pin);

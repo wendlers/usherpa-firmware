@@ -260,6 +260,22 @@ int pin_analog_read(unsigned char pin);
 int pin_pulselength_read(unsigned char pin);
 
 /**
+ * Read the digital pulselengh for a given PIN. The function for the given PIN is
+ * changed first to OUTPUT, then the PIN is driven HIGH for at least 10us (e.g. 
+ * to charge a condensator of a range finder), then the PIN function is restored 
+ * to whatever INPUT it was before, and the function waits for next raising edge, 
+ * then measures the time until a falling edge is detected. 
+ *
+ * @param[in]	pin			PIN to perform this action for 
+ * @return				    pulse lenght in usec on succes (positive value)	
+ * 							PIN_STAT_ERR_UNSUPFUNC if PIN does not support this function 
+ * 							(since it is not configured as INPUT)	
+ * 							PIN_STAT_ERR_UNKPORT if given port for PIN is not known
+ * 							PIN_STAT_ERR_UNKPIN  if given pin nr. for PIN is not known
+ */
+int pin_pulselength_read_dhf(unsigned char pin);
+
+/**
  * Set the period for a PIN configured for PWM. 
  *
  * @param[in]	pin			PIN to perform this action for 
