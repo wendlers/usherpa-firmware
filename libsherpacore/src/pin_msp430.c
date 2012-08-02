@@ -454,15 +454,94 @@ int pin_pulselength_read(unsigned char pin)
 	return t;
 }
 
+int pin_pulselength_read_dhf2p(unsigned char pin1, unsigned char pin2) 
+{
+	int to = 32767;
+	int t  = 0;
+	
+	// time to wait until start reading ...
+	volatile unsigned long i = 100;
+
+ 	int port1;
+ 	int port2;
+
+	int bit1;
+	int bit2;
+
+	unsigned char pf = pin_function(pin1);
+
+	if(pf != PIN_FUNCTION_INPUT_FLOAT && pf != PIN_FUNCTION_INPUT_PULLUP && 
+	   pf != PIN_FUNCTION_INPUT_PULLDOWN) { 
+		return PIN_STAT_ERR_UNSUPFUNC;
+	}
+
+	pf = pin_function(pin2);
+
+	if(pf != PIN_FUNCTION_OUTPUT) { 
+		return PIN_STAT_ERR_UNSUPFUNC;
+	}
+
+	if((port1 = pin2port(pin1)) < 0) return port1;
+	if((bit1  = pin2bit(pin1))  < 0) return bit1;
+	if((port2 = pin2port(pin2)) < 0) return port2;
+	if((bit2  = pin2bit(pin2))  < 0) return bit2;
+
+	// pin2 is the trigger pin - drive it high then low
+	if(port2 == 1) {
+	  	P1OUT &= ~bit2;					// set to LOW                    
+  		P1OUT |=  bit2;					// set to HIGH                    
+
+		// wait a litte to get a pulse of >= 10us
+		do (i--);
+		while (i != 0);
+
+  		P1OUT &= ~bit2;					// set to LOW                    
+	}
+	else {
+	  	P2OUT &= ~bit2;					// set to LOW                    
+  		P2OUT |=  bit2;					// set to HIGH                    
+
+		// wait a litte to get a pulse of >= 10us
+		do (i--);
+		while (i != 0);
+
+  		P2OUT &= ~bit2;					// set to LOW                    
+	}
+
+	// pin1 is the echo pin, wait until it goes to high, 
+	// then measure time it takes to go back to low again
+	if(port1 == 1) {
+		while((P1IN & bit1) != bit1) {
+			if(t++ == to) return to;
+		}
+		t = 0;
+		while((P1IN & bit1) == bit1) {
+			if(t++ == to) return to;
+		}
+	}
+	else {
+		while((P2IN & bit1) != bit1) {
+			if(t++ == to) return to;
+		}
+		t = 0;
+		while((P2IN & bit1) == bit1) {
+			if(t++ == to) return to;
+		}
+	}
+
+	return t;
+}
+
 int pin_pulselength_read_dhf(unsigned char pin) 
 {
 	int to = 10000;
 	int t  = 0;
 
+	int port;
+	int bit;
+
 	// time to wait until start reading ...
 	volatile unsigned long i = 100;
-
-	int s = 0; 
 
 	unsigned char pf = pin_function(pin);
  
@@ -471,80 +550,54 @@ int pin_pulselength_read_dhf(unsigned char pin)
 		return PIN_STAT_ERR_UNSUPFUNC;
 	}
 
-	// read initial state of pin 
-//	int is = pin_digital_read(pin);
-
-	//
-	// set pin to output
-//	if((s = pin_setup(pin, PIN_FUNCTION_OUTPUT)) < 0) return s;
-
-	// drive the pin high for at least 10us
-//	pin_clear(pin);
-//	pin_set(pin);
-
-//	do (i--);
-//	while (i != 0);
+	if((port = pin2port(pin)) < 0) return port;
+	if((bit  = pin2bit(pin))  < 0) return bit;
 	
-	// drive the pin low
-//	pin_clear(pin);
+	// pin is the trigger+echo pin - set to output,  drive it high then low
+	if(port == 1) {
+		P1DIR |=  bit;					// set direction to out                 
+	  	P1OUT &= ~bit;					// set to LOW                    
+  		P1OUT |=  bit;					// set to HIGH                    
 
+		// wait a litte to get a pulse of >= 10us
+		do (i--);
+		while (i != 0);
 
-  	P2OUT &= ~BIT0;					// set to LOW                    
-  	P2OUT |=  BIT0;					// set to HIGH                    
-	do (i--);
-	while (i != 0);
-  	P2OUT &= ~BIT0;					// set to LOW                    
+  		P1OUT &= ~bit;					// set to LOW                    
+		P1DIR &= ~bit;					// clear OUT flag for the pin                 
 
-	// set the pin back to whatever input it was
-	// if((s = pin_setup(pin, pf)) < 0) return s;
-	
-//	P2DIR &= ~BIT1;					// make sure to clear OUT flag for the pin                 
-
-	int t0 = 0;
-	int ps = P2IN & BIT1;
-
-	while((P2IN & BIT1) != BIT1) {
-		if(t0++ == to) break;
+		// read response on the pin
+		while((P1IN & bit) != bit) {
+			if(t++ == to) return to;
+		}
+		t = 0;
+		while((P1IN & bit) == bit) {
+			if(t++ == to) return to;
+		}
 	}
-	t = 0;
-	while((P2IN & BIT1) == BIT1) {
-		if(t++ == to) break;
-	}
+	else {
+		P2DIR |=  bit;					// set direction to out                 
+	  	P2OUT &= ~bit;					// set to LOW                    
+  		P2OUT |=  bit;					// set to HIGH                    
 
-#ifdef PIN_DBG
-	cio_printf("got state changes after %x,  %i, %i\n\r",ps, t0, t);
-#endif
+		// wait a litte to get a pulse of >= 10us
+		do (i--);
+		while (i != 0);
+
+  		P2OUT &= ~bit;					// set to LOW                    
+		P2DIR &= ~bit;					// clear OUT flag for the pin                 
+
+		// read response on the pin
+		while((P2IN & bit) != bit) {
+			if(t++ == to) return to;
+		}
+		t = 0;
+		while((P2IN & bit) == bit) {
+			if(t++ == to) return to;
+		}
+	}
 	
 	return t;
-#if 0
-	// read pulse lenght
-	
-	// 1. wait until state changes from initial state to ~initial state 
-   	while((s = pin_digital_read(pin)) == is) {
-		// if max-t is reached, return (timeout)
-		if(t++ == to) return to;
-	}
-
-#ifdef PIN_DBG
-	cio_printf("got state change after %i\n\r", t);
-#endif
-	
-	// 2. wait until state changes back to initial state 
-	t = 0;
-
-#ifdef PIN_DBG
-	cio_printf("waiting for state change 2\n\r");
-#endif
-   	while(pin_digital_read(pin) != is) {
-		// if max-t is reached, return (timeout)
-		if(t++ == to) return to;
-	}
-#ifdef PIN_DBG
-	cio_printf("got for state change after %x\n\r", t);
-#endif
-	
-	return t;
-#endif
 }
 
 int pin_pwm_function(unsigned char pin, int period)

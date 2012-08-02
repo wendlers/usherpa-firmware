@@ -67,15 +67,16 @@ int main(void)
 
 	cio_print("** uSherpa - librocketcore PIN test **\n\r");
 
-//	dump_regs("initial");
+	dump_regs("initial");
 
-	pin_setup(PIN_2_0, PIN_FUNCTION_OUTPUT);
-	pin_setup(PIN_2_1, PIN_FUNCTION_INPUT_FLOAT);
+	pin_setup(PIN_2_0, PIN_FUNCTION_INPUT_FLOAT);
+	pin_setup(PIN_2_1, PIN_FUNCTION_OUTPUT);
+
 	int pl = 0;
 
 	cio_print("reading range finder...");
-	pl = pin_pulselength_read_dhf(PIN_2_1);
-	cio_printf(" OK, pl=%i\n\r", pl);
+	pl = pin_pulselength_read_dhf2p(PIN_2_0, PIN_2_1);
+	cio_printf(" -> pl=%i\n\r", pl);
 
 #if 0
 

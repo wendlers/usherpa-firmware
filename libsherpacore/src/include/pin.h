@@ -276,6 +276,23 @@ int pin_pulselength_read(unsigned char pin);
 int pin_pulselength_read_dhf(unsigned char pin);
 
 /**
+ * Read the digital pulselengh for a given PIN. Use a secont pin to trigger
+ * "something" that initiates a pulse on pin 1. The first pin must be configured
+ * as INPUT, the second one as OUTPUT. 
+ * On the input pin, the time is measured that passes between the first raising
+ * and the first falling edge detected. 
+ *
+ * @param[in]	pin1		PIN used to read pulselength 
+ * @param[in]	pin2		PIN used to trigger pulse 
+ * @return				    pulse lenght in usec on succes (positive value)	
+ * 							PIN_STAT_ERR_UNSUPFUNC if PIN does not support this function 
+ * 							(since it is not configured as INPUT)	
+ * 							PIN_STAT_ERR_UNKPORT if given port for PIN is not known
+ * 							PIN_STAT_ERR_UNKPIN  if given pin nr. for PIN is not known
+ */
+int pin_pulselength_read_dhf2p(unsigned char pin1, unsigned char pin2); 
+
+/**
  * Set the period for a PIN configured for PWM. 
  *
  * @param[in]	pin			PIN to perform this action for 
