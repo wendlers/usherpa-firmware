@@ -534,7 +534,7 @@ int pin_pulselength_read_dhf2p(unsigned char pin1, unsigned char pin2)
 
 int pin_pulselength_read_dhf(unsigned char pin) 
 {
-	int to = 10000;
+	int to = 32767;
 	int t  = 0;
 
 	int port;
