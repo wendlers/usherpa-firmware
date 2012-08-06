@@ -69,16 +69,17 @@ int main(void)
 
 	dump_regs("initial");
 
+#if 0
 	pin_setup(PIN_2_0, PIN_FUNCTION_INPUT_FLOAT);
 	pin_setup(PIN_2_1, PIN_FUNCTION_OUTPUT);
 
 	int pl = 0;
 
 	cio_print("reading range finder...");
-	pl = pin_pulselength_read_dhf2p(PIN_2_0, PIN_2_1);
+//	pl = pin_pulselength_read_dhf2p(PIN_2_0, PIN_2_1);
+	pl = pin_pulselength_read_dhf(PIN_2_0);
 	cio_printf(" -> pl=%i\n\r", pl);
-
-#if 0
+#endif
 
 	// invalid port
 	if(pin_setup(0x30, PIN_FUNCTION_OUTPUT) == PIN_STAT_ERR_INVALPORT) {
@@ -271,6 +272,6 @@ int main(void)
 			pin_pwm_control(PIN_2_2, adc2dc(adcin1));
 		}
 	}
-#endif
+
 	return 0;
 }
