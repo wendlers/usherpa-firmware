@@ -241,14 +241,14 @@ int handle_packet_external_interrupt_function(unsigned char length, unsigned cha
 	int s;
 
 	// check if length matches for packet-data
-	if(length != 2) {
+	if(length != 3) {
 		send_status_packet(PACKET_RETURN_INAVLID_DATA);
 		return PACKET_STAT_ERR_DATA;
 	}
 
 	packet_data_in_external_interrupt_function *pd = (packet_data_in_external_interrupt_function *)&data[0];
 
-	if((s = pin_exti_function(pd->pin, pd->function)) != PACKET_STAT_OK) {
+	if((s = pin_exti_function(pd->pin, pd->function, pd->trigger_count)) != PACKET_STAT_OK) {
 		send_status_packet(PACKET_RETURN_INVALID_PIN_COMMAND);
 	}
 	else {

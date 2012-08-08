@@ -22,6 +22,9 @@
 
 #include "sherpacore.h"
 
+// definition and state of trigger counters
+extern unsigned char pin_exti_trigger_count[16][2];
+
 int handle_packet_reset(unsigned char length, unsigned char *data)
 {
 	send_status_packet(PACKET_RETURN_ACK);
@@ -40,6 +43,8 @@ int handle_packet_reset(unsigned char length, unsigned char *data)
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void)
 {
+	int idx;
+
 	unsigned char i;
 	unsigned char bit;
 
@@ -57,18 +62,28 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 			P1IFG &= ~bit;			// reset IR flag
 
-			pdo->pin   = PIN_1_0 + i;
-			pdo->state = ((P1IES & bit) ? 0 : 1);
+			idx	= bit;				// index in trigger count array
 
-			outp.crc = packet_calc_crc(&outp);
+			// send interrupt packet only if trigger count is reached
+			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
 
-			packet_send(&outp);
+				pin_exti_trigger_count[idx][1] = 0; 
+
+				pdo->pin   = PIN_1_0 + i;
+				pdo->state = ((P1IES & bit) ? 0 : 1);
+
+				outp.crc = packet_calc_crc(&outp);
+
+				packet_send(&outp);
+			}
 		}
 	}
 }
 
 interrupt(PORT2_VECTOR) PORT2_ISR(void)
 {
+	int idx;
+
 	unsigned char i;
 	unsigned char bit;
 
@@ -83,14 +98,23 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 		bit = 0x01 << i;
 
 		if((P2IE & bit) == bit && (P2IFG & bit) == bit) {
+
 			P2IFG &= ~bit;			// reset IR flag
 
-			pdo->pin   = PIN_2_0 + i;
-			pdo->state = ((P2IES & bit) ? 0 : 1);
+			idx	= 8 + bit;			// index in trigger count array
 
-			outp.crc = packet_calc_crc(&outp);
+			// send interrupt packet only if trigger count is reached
+			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
 
-			packet_send(&outp);
+				pin_exti_trigger_count[idx][1] = 0; 
+
+				pdo->pin   = PIN_2_0 + i;
+				pdo->state = ((P2IES & bit) ? 0 : 1);
+
+				outp.crc = packet_calc_crc(&outp);
+
+				packet_send(&outp);
+			}
 		}
 	}
 }

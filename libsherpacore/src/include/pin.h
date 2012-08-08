@@ -324,13 +324,15 @@ int pin_pwm_control(unsigned char pin, unsigned char duty_cycle);
  * an interrupt is triggered (never=PWM_FUNCTION_EXTI_DISABLE, low-high-edge=PWM_FUNCTION_EXIT_LOWHIGH,
  * high-low-edge=PWM_FUNCTION_EXTI_HIGHLOW).
  *
- * @param[in]	pin			PIN to perform this action for 
- * @return				    pulse lenght in ms on succes (positive value)	
- * 							PIN_STAT_ERR_UNSUPFUNC if PIN does not support this function 
- * 							(since it is not configured as INPUT)	
- * 							PIN_STAT_ERR_UNKPORT if given port for PIN is not known
- * 							PIN_STAT_ERR_UNKPIN  if given pin nr. for PIN is not known
+ * @param[in]	pin				PIN to perform this action for 
+ * @param[in]	funciton		Function to assign to this pin (see above)
+ * @param[in]	trigger_count 	Defines how many times the in function defined edge has to be
+ * 								detected until the external interrupt is fired
+ * @return				   		PIN_STAT_ERR_UNSUPFUNC if PIN does not support this function 
+ * 								(since it is not configured as INPUT)	
+ * 								PIN_STAT_ERR_UNKPORT if given port for PIN is not known
+ * 								PIN_STAT_ERR_UNKPIN  if given pin nr. for PIN is not known
  */
-int pin_exti_function(unsigned char pin, unsigned char function);
+int pin_exti_function(unsigned char pin, unsigned char function, unsigned char trigger_count);
 
 #endif

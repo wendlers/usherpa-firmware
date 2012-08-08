@@ -245,6 +245,11 @@ typedef struct {
 	 */
 	unsigned char	function;
 
+	/**
+ 	 * Defines, how many times the in function defined edge has
+ 	 * to be detected until the external interrupt is fired. 
+ 	 */
+	unsigned char	trigger_count;
 } packet_data_in_external_interrupt_function;
 
 /**

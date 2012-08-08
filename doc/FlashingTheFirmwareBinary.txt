@@ -1,0 +1,82 @@
+Flashing the uSherpa Binaries to Your Mircocontroller 
+=====================================================
+09.08.2012 Stefan Wendler
+sw@kaltpost.de
+
+This document describes how to flash the uSherpa firmware binary to yout microcontroller. 
+
+
+Prerequisites
+-------------
+
+It is assumed, that the following is in place:
+
+* A copy of the uSherpa firmware binary for your MCU (Launchpad with MSP430G2553)
+* A TI Launchpad equipped with the MSP430G2553 connected to the USB 
+  port of your PC, and the virtual COM port it is using is known.
+
+
+Flashing the MSP430G2553 on a TI Launchpad
+------------------------------------------
+
+** On Linux
+
+*** Using "mspdebug"
+
+To perform this step, "mspdebug" tool is needed. On Ubuntu, the tool is available
+as installable package. 
+
+You should have downloaded the uSherpa firmware as a binary in ELF format.
+We assume, that this firmware has the name "firmware.elf".
+
+To flash the firmware to the Launchpad, make sure the Launchpad is connecetd and
+download the firmware to the device by using "mspdebug":
+
+  mspdebug rf2500 "prog firmware.elf"
+
+After a short while, "mspdebug" should return with a success message. 
+
+
+** On MacOSX
+
+*** Using "mspdebug"
+
+See the corresponding section under "On Linux". An easy to use toolchain installer
+for the Launchpad could be found here: 
+
+  http://code.google.com/p/osx-launchpad/
+
+
+** On Windows
+
+*** Using MSP430 Flasher
+
+!!! WARNING !!!
+
+Since I don't have Windows (don't need it), this is NOT tested. Pleas report success
+or corrections if you successfully got this working.
+
+!!! WARNING !!!
+
+MSP430 Flasher is an open-source, shell-based interface for programming MSP430 devices
+provided by TI. By using this utility, it is not needed to install any IDE (CCS, IAR, ...).
+
+To use the utility, the USB dirvers for the Launchpad must be installed. You can get this
+drivers here:
+
+  https://github.com/energia/Energia/raw/gh-pages/files/EZ430-UART.zip
+
+Next get the MSP430 Flasher and install it as described here:
+
+  http://processors.wiki.ti.com/index.php/MSP430_Flasher_-_Command_Line_Programmer
+
+Next, download the uSherpa firmware as a binary in HEX format.
+We assume, that this firmware has the name "firmware.hex".
+
+To flash the firmware to the Launchpad, make sure the Launchpad is connected and
+download the firmware to the device by using "MSP430Flasher":
+
+  MSP430Flasher.exe -n MSP430G2553 -v -w firmware.hex
+
+After a short while, "MSP430Flasher" should return with a success message. 
+

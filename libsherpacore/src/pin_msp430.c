@@ -46,6 +46,8 @@ unsigned char pin_curr_func[] = {
 	PIN_FUNCTION_INPUT_FLOAT,			// P2.7
 };
 
+unsigned char pin_exti_trigger_count[16][2];
+
 int pin2port(unsigned char pin) 
 {
 	int port = (0xF0 & pin) >> 4;
@@ -654,11 +656,12 @@ int pin_pwm_control(unsigned char pin, unsigned char duty_cycle)
 	return PIN_STAT_OK;
 }
 
-int pin_exti_function(unsigned char pin, unsigned char function)
+int pin_exti_function(unsigned char pin, unsigned char function, unsigned char trigger_count)
 {
 	unsigned char pf = pin_function(pin);
  
-	if(pf != PIN_FUNCTION_INPUT_FLOAT && pf != PIN_FUNCTION_INPUT_PULLUP && pf != PIN_FUNCTION_INPUT_PULLDOWN) { 
+	if(pf != PIN_FUNCTION_INPUT_FLOAT && pf != PIN_FUNCTION_INPUT_PULLUP && 
+	   pf != PIN_FUNCTION_INPUT_PULLDOWN) { 
 		return PIN_STAT_ERR_UNSUPFUNC;
 	}
 
@@ -702,6 +705,12 @@ int pin_exti_function(unsigned char pin, unsigned char function)
  	    	P2IE  |=  bit;		// enable interrupt
 		}
 	}
+
+	// set trigger stuff:
+	int idx	= (port - 1) * 8 + bit;
+
+	pin_exti_trigger_count[idx][0] = trigger_count;
+	pin_exti_trigger_count[idx][1] = 0;
 
 	return PIN_STAT_OK;
 }
