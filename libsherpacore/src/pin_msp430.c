@@ -707,7 +707,7 @@ int pin_exti_function(unsigned char pin, unsigned char function, unsigned char t
 	}
 
 	// set trigger stuff:
-	int idx	= (port - 1) * 8 + bit;
+	int idx	= (port - 1) * 8 + (0x0F & pin);
 
 	pin_exti_trigger_count[idx][0] = trigger_count;
 	pin_exti_trigger_count[idx][1] = 0;

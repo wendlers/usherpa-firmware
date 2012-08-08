@@ -62,7 +62,7 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 			P1IFG &= ~bit;			// reset IR flag
 
-			idx	= bit;				// index in trigger count array
+			idx	= i;				// index in trigger count array
 
 			// send interrupt packet only if trigger count is reached
 			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
@@ -101,7 +101,7 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 
 			P2IFG &= ~bit;			// reset IR flag
 
-			idx	= 8 + bit;			// index in trigger count array
+			idx	= 8 + i;			// index in trigger count array
 
 			// send interrupt packet only if trigger count is reached
 			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
