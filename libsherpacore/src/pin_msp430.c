@@ -670,6 +670,12 @@ int pin_exti_function(unsigned char pin, unsigned char function, unsigned char t
 
 	if((port = pin2port(pin)) < 0) return port;
 	if((bit  = pin2bit(pin))  < 0) return bit;
+	
+	// set trigger stuff:
+	int idx	= (port - 1) * 8 + (0x0F & pin);
+
+	pin_exti_trigger_count[idx][0] = trigger_count;
+	pin_exti_trigger_count[idx][1] = 0;
 
 	if(port == 1) {
 		if(function == PIN_FUNCTION_EXTI_HIGHLOW) {
@@ -705,12 +711,6 @@ int pin_exti_function(unsigned char pin, unsigned char function, unsigned char t
  	    	P2IE  |=  bit;		// enable interrupt
 		}
 	}
-
-	// set trigger stuff:
-	int idx	= (port - 1) * 8 + (0x0F & pin);
-
-	pin_exti_trigger_count[idx][0] = trigger_count;
-	pin_exti_trigger_count[idx][1] = 0;
 
 	return PIN_STAT_OK;
 }

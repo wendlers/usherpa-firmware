@@ -67,6 +67,10 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 			// send interrupt packet only if trigger count is reached
 			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
 
+				if(pin_exti_trigger_count[idx][0] > 0) {
+	 	    		P1IE  &= ~bit;		// disable interrupt
+				}
+
 				pin_exti_trigger_count[idx][1] = 0; 
 
 				pdo->pin   = PIN_1_0 + i;
@@ -105,6 +109,10 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 
 			// send interrupt packet only if trigger count is reached
 			if(++pin_exti_trigger_count[idx][1] >= pin_exti_trigger_count[idx][0]) {  
+
+				if(pin_exti_trigger_count[idx][0] > 0) {
+	 	    		P2IE  &= ~bit;		// disable interrupt
+				}
 
 				pin_exti_trigger_count[idx][1] = 0; 
 
