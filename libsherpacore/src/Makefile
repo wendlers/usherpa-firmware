@@ -1,6 +1,7 @@
 LIBNAME  = libsherpacore
 INCDIR  += -I../../libemb/libconio/src/include 
 OBJS    += packet.o pin_msp430.o core_proto.o core_handlers.o core_handlers_msp430.o packet_handler.o
+OBJS	+= mutex.o
 
 include ../../common_lib.mk
 

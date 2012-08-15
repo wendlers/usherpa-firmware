@@ -28,6 +28,8 @@ int handle_packet_null(unsigned char length, unsigned char *data)
 
 int handle_packet_system_info(unsigned char length, unsigned char *data)
 {
+	packet outp;
+
 	packet_data_out_system_info *pd = (packet_data_out_system_info *)&outp.data[0];
 
 	outp.start	= PACKET_OUTBOUND_START;
@@ -41,15 +43,7 @@ int handle_packet_system_info(unsigned char length, unsigned char *data)
 
 	outp.crc	= packet_calc_crc(&outp);
 
-	packet_send(&outp);
-
-	return PACKET_STAT_OK;
-}
-
-int handle_packet_device_control(unsigned char length, unsigned char *data)
-{
-	// TODO define + implement
-	send_status_packet(PACKET_RETURN_UNKNOWN);
+	packet_send_excl(&outp, NONIRQ);
 
 	return PACKET_STAT_OK;
 }
@@ -78,6 +72,8 @@ int handle_packet_pin_function(unsigned char length, unsigned char *data)
 
 int handle_packet_pin_control(unsigned char length, unsigned char *data)
 {
+	packet outp;
+
 	int s = PACKET_STAT_OK;
 
 	// check if length matches for packet-data
@@ -129,7 +125,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send(&outp);
+				packet_send_excl(&outp, NONIRQ);
 			}
 			break;
 		case PIN_CONTROL_ANALOG_READ:
@@ -149,7 +145,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send(&outp);
+				packet_send_excl(&outp, NONIRQ);
 			}
 			break;
 		case PIN_CONTROL_PULSELENGTH_READ:
@@ -179,7 +175,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send(&outp);
+				packet_send_excl(&outp, NONIRQ);
 			}
 			break;
 		default:

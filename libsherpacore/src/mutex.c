@@ -17,26 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core_proto.h"
-#include "packet_handler.h"
+#include "mutex.h"
 
-/**
- * IN-bound packet instance.
- */
-packet inp;
+int mutex_flag[2];
 
-void send_status_packet(unsigned char stat)
-{
-	packet outp;
+int mutex_turn;
 
-	packet_data_out_status *pd = (packet_data_out_status *)&outp.data[0];
+void mutex_acquire(int lockId) {
 
-	outp.start	= PACKET_OUTBOUND_START;
-	outp.length	= 5;
-	outp.type 	= PACKET_OUT_STATUS;
-	pd->status  = stat;
-	outp.crc	= packet_calc_crc(&outp);
+	int turnId 			= (lockId == 1 ? 0 : 1);
+	mutex_flag[lockId] 	= 1;
+    mutex_turn 			= turnId;
 
-	packet_send_excl(&outp, NONIRQ);
+    while (mutex_flag[turnId] == 1 && mutex_turn == turnId) {
+		__asm__("nop");
+    }
+}
+
+void mutex_release(int lockId) {
+
+	mutex_flag[lockId] = 0;
 }
 

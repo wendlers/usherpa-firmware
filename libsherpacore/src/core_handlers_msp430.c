@@ -43,6 +43,8 @@ int handle_packet_reset(unsigned char length, unsigned char *data)
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void)
 {
+	packet outp;
+
 	int idx;
 
 	unsigned char i;
@@ -78,7 +80,7 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send(&outp);
+				packet_send_excl(&outp, IRQ);
 			}
 		}
 	}
@@ -86,6 +88,8 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 interrupt(PORT2_VECTOR) PORT2_ISR(void)
 {
+	packet outp;
+
 	int idx;
 
 	unsigned char i;
@@ -121,7 +125,7 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send(&outp);
+				packet_send_excl(&outp, IRQ);
 			}
 		}
 	}

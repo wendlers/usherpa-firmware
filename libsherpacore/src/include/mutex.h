@@ -17,26 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core_proto.h"
-#include "packet_handler.h"
+#ifndef __MUTEX_H_
+#define __MUTEX_H_
 
-/**
- * IN-bound packet instance.
- */
-packet inp;
+void mutex_acquire(int lockId);
 
-void send_status_packet(unsigned char stat)
-{
-	packet outp;
+void mutex_release(int lockId);
 
-	packet_data_out_status *pd = (packet_data_out_status *)&outp.data[0];
-
-	outp.start	= PACKET_OUTBOUND_START;
-	outp.length	= 5;
-	outp.type 	= PACKET_OUT_STATUS;
-	pd->status  = stat;
-	outp.crc	= packet_calc_crc(&outp);
-
-	packet_send_excl(&outp, NONIRQ);
-}
-
+#endif

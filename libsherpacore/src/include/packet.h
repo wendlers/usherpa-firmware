@@ -51,6 +51,16 @@
 #define PACKET_STAT_ERR_DATA		-4
 
 /**
+ * Mutex lock ID for packet sending from WITHIN IRQ handlers
+ */
+#define IRQ							1
+
+/**
+ * Mutex lock ID for packet sending from OUTSIDE IRQ handlers
+ */
+#define NONIRQ						0
+
+/**
  * General definition of a binary packet
  */
 typedef struct {
@@ -144,6 +154,20 @@ int	packet_check_crc(packet *pkt);
  * 						data length PACKET_STAT_ERR_LENGHT
  */ 
 int packet_send(packet *pkt);
+
+/**
+ * Send a given packet. The method {@link packet_byte_to_sendq} is called for
+ * each byte that has to be sent out. This method uses a mutex lock for the 
+ * time it takes to transfer the data to the sendq.  
+ *
+ * @param[in]	*pkt	pointer to packet which has to be sent 
+ * @param[in]	*lockId	0 for thread A (main code), 
+ * 						1 for thread B (interrupt handler) 
+ * @return				on success return PACKET_STAT_OK, 
+ * 						if given package length exceeds the maximum
+ * 						data length PACKET_STAT_ERR_LENGHT
+ */ 
+int packet_send_excl(packet *pkt, int lockId);
 
 /**
  * Receive a packet. The method {@link packet_byte_from_recvq} is called to  

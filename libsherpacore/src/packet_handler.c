@@ -20,7 +20,6 @@
 #include "packet_handler.h"
 #include "core_proto.h"
 #include "core_handlers.h"
-// #include "conio.h"
 
 packet_rcv_handlers packet_handlers = {
 	.count = 8,

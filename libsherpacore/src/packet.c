@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "mutex.h"
 #include "packet.h"
 
 unsigned char packet_calc_crc(packet *pkt) {
@@ -71,6 +72,17 @@ int packet_send(packet *pkt) {
 	packet_byte_to_sendq(pkt->crc);
 	
 	return PACKET_STAT_OK;
+}
+
+int packet_send_excl(packet *pkt, int lockId) {
+
+	int ret; 
+
+	mutex_acquire(lockId);
+	ret = packet_send(pkt);
+	mutex_release(lockId);
+
+	return ret;
 }
 
 int packet_receive(packet *pkt, unsigned char start) {

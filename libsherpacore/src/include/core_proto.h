@@ -337,12 +337,6 @@ typedef struct {
 	unsigned char	value_msb;
 } packet_data_out_pulselength_read;
 
-
-/**
- * OUT-bound packets use this packet instance
- */
-extern packet outp;
-
 /**
  * IN-bound packets use this packet instance
  */

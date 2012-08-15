@@ -50,20 +50,6 @@ int handle_packet_null(unsigned char length, unsigned char *data);
 int handle_packet_system_info(unsigned char length, unsigned char *data);
 
 /**
- * Handle in-bound packet of type DEVICE CONTROL. 
- *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
- *
- * @param	length		length of data in bytes
- * @param	*data		the data part received with the in-bound packet
- * @return				status regarding handling of this packet
- * 						which is allways PACKET_STAT_OK for the DEVICE CONTROL packet
- */
-int handle_packet_device_control(unsigned char length, unsigned char *data);
-
-/**
  * Handle in-bound packet of type PIN FUNCTION. 
  *
  * For this kind of packet a STATUS response with ACK is sent back to the client if the return
