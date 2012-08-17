@@ -20,16 +20,16 @@
 #include "mutex.h"
 
 int mutex_flag[2];
-
 int mutex_turn;
 
 void mutex_acquire(int lockId) {
 
-	int turnId 			= (lockId == 1 ? 0 : 1);
-	mutex_flag[lockId] 	= 1;
-    mutex_turn 			= turnId;
+	int other			= 1 - lockId;
 
-    while (mutex_flag[turnId] == 1 && mutex_turn == turnId) {
+	mutex_flag[lockId] 	= 1;
+    mutex_turn 			= lockId;
+
+    while (mutex_flag[other] == 1 && mutex_turn == lockId) {
 		__asm__("nop");
     }
 }
