@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mutex.h"
 #include "packet.h"
 
 unsigned char packet_calc_crc(packet *pkt) {

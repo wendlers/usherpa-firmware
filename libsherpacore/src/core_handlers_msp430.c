@@ -56,9 +56,11 @@ void process_exti()
 
 		if((exti_lowhigh_flags & bit) == bit) {
 			pdo->state = 1;
+			exti_lowhigh_flags &= ~bit;
 		}
 		else if((exti_highlow_flags & bit) == bit) {
 			pdo->state = 0;
+			exti_highlow_flags &= ~bit;
 		}
 		else {
 			continue;
