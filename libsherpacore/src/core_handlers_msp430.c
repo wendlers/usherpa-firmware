@@ -96,21 +96,11 @@ int handle_packet_reset(unsigned char length, unsigned char *data)
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void)
 {
-//	packet outp;
-
 	int idx;
 
 	unsigned char i;
 	unsigned char bit;
 
-#if 0
-	packet_data_out_digital_pin_read *pdo = (packet_data_out_digital_pin_read *)&outp.data[0];
-
-	outp.start	= PACKET_OUTBOUND_START_IR;
-	outp.length	= 6;
-	outp.type 	= PACKET_OUT_DIGITAL_PIN_READ;
-#endif
-	
 	for(i = 0; i < 8; i++) {
 	
 		bit = 0x01 << i;
@@ -139,15 +129,6 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 					exti_lowhigh_flags &= ~bit;
 					exti_highlow_flags |=  bit;
 				}
-				
-#if 0
-				pdo->pin   = PIN_1_0 + i;
-				pdo->state = ((P1IES & bit) ? 0 : 1);
-
-				outp.crc = packet_calc_crc(&outp);
-
-				packet_send_excl(&outp, IRQ);
-#endif
 			}
 		}
 	}
@@ -155,21 +136,11 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 interrupt(PORT2_VECTOR) PORT2_ISR(void)
 {
-//	packet outp;
-
 	int idx;
 
 	unsigned char i;
 	unsigned char bit;
 
-#if 0
-	packet_data_out_digital_pin_read *pdo = (packet_data_out_digital_pin_read *)&outp.data[0];
-
-	outp.start	= PACKET_OUTBOUND_START_IR;
-	outp.length	= 6;
-	outp.type 	= PACKET_OUT_DIGITAL_PIN_READ;
-#endif
-	
 	for(i = 0; i < 8; i++) {
 	
 		bit = 0x01 << i;
@@ -198,14 +169,6 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 					exti_lowhigh_flags &= ~(bit << 8);
 					exti_highlow_flags |=  (bit << 8);
 				}
-#if 0
-				pdo->pin   = PIN_2_0 + i;
-				pdo->state = ((P2IES & bit) ? 0 : 1);
-
-				outp.crc = packet_calc_crc(&outp);
-
-				packet_send_excl(&outp, IRQ);
-#endif
 			}
 		}
 	}
