@@ -88,9 +88,8 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data);
 /**
  * Handle in-bound packet of type PWM FUNCTION. 
  *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
+ * For this kind of packet a STATUS response with ACK is sent back on success. On Error the
+ * STATUS with type INVALID-PIN-COMMAND is sent back. 
  *
  * @param	length		length of data in bytes
  * @param	*data		the data part received with the in-bound packet
@@ -102,9 +101,8 @@ int handle_packet_pwm_function(unsigned char length, unsigned char *data);
 /**
  * Handle in-bound packet of type PWM CONTROL. 
  *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
+ * For this kind of packet a STATUS response with ACK is sent back on success. On Error the
+ * STATUS with type INVALID-PIN-COMMAND is sent back. 
  *
  * @param	length		length of data in bytes
  * @param	*data		the data part received with the in-bound packet
@@ -116,9 +114,8 @@ int handle_packet_pwm_control(unsigned char length, unsigned char *data);
 /**
  * Handle in-bound packet of type EXTERNAL INTERRUPT FUNCTION. 
  *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
+ * For this kind of packet a STATUS response with ACK is sent back on success. On Error the
+ * STATUS with type INVALID-PIN-COMMAND is sent back. 
  *
  * @param	length		length of data in bytes
  * @param	*data		the data part received with the in-bound packet
@@ -130,9 +127,8 @@ int handle_packet_external_interrupt_function(unsigned char length, unsigned cha
 /**
  * Handle in-bound packet of type RESET. 
  *
- * NOT DEFINED / IMPLEMENTED 
- *
- * For this kind of packet a STATUS response with UNKNOWN is sent back to the client.
+ * For this kind of packet a STATUS response with ACK is sent back on success. On Error the
+ * STATUS with type INVALID-PIN-COMMAND is sent back. 
  *
  * @param	length		length of data in bytes
  * @param	*data		the data part received with the in-bound packet
@@ -140,5 +136,11 @@ int handle_packet_external_interrupt_function(unsigned char length, unsigned cha
  * 						which is allways PACKET_STAT_OK for the RESET packet
  */
 int handle_packet_reset(unsigned char length, unsigned char *data);
+
+/**
+ * Check flags for external interrupts, if flags are set, report them
+ * through interrupt packet. 
+ */
+void process_exti();
 
 #endif

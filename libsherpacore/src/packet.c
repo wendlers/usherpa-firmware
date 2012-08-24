@@ -74,17 +74,6 @@ int packet_send(packet *pkt) {
 	return PACKET_STAT_OK;
 }
 
-int packet_send_excl(packet *pkt, int lockId) {
-
-	int ret; 
-
-	mutex_acquire(lockId);
-	ret = packet_send(pkt);
-	mutex_release(lockId);
-
-	return ret;
-}
-
 int packet_receive(packet *pkt, unsigned char start) {
 
 	unsigned char  i;

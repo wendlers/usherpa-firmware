@@ -43,7 +43,7 @@ int handle_packet_system_info(unsigned char length, unsigned char *data)
 
 	outp.crc	= packet_calc_crc(&outp);
 
-	packet_send_excl(&outp, NONIRQ);
+	packet_send(&outp);
 
 	return PACKET_STAT_OK;
 }
@@ -125,7 +125,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send_excl(&outp, NONIRQ);
+				packet_send(&outp);
 			}
 			break;
 		case PIN_CONTROL_ANALOG_READ:
@@ -145,7 +145,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send_excl(&outp, NONIRQ);
+				packet_send(&outp);
 			}
 			break;
 		case PIN_CONTROL_PULSELENGTH_READ:
@@ -175,7 +175,7 @@ int handle_packet_pin_control(unsigned char length, unsigned char *data)
 
 				outp.crc = packet_calc_crc(&outp);
 
-				packet_send_excl(&outp, NONIRQ);
+				packet_send(&outp);
 			}
 			break;
 		default:

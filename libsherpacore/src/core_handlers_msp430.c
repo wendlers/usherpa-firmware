@@ -25,6 +25,57 @@
 // definition and state of trigger counters
 extern unsigned char pin_exti_trigger_count[16][2];
 
+// keep track of external interrupts that changed a pin status from low to high
+extern unsigned int exti_lowhigh_flags;
+
+// keep track of external interrupts that changed a pin status from high to low
+extern unsigned int exti_highlow_flags;
+
+void process_exti() 
+{
+	packet outp;
+
+	unsigned int bit;
+
+	int i;
+
+	if((exti_lowhigh_flags | exti_highlow_flags) == 0) {
+		// nothing to do here
+		return;
+	}
+
+	packet_data_out_digital_pin_read *pdo = (packet_data_out_digital_pin_read *)&outp.data[0];
+
+	outp.start	= PACKET_OUTBOUND_START_IR;
+	outp.length	= 6;
+	outp.type 	= PACKET_OUT_DIGITAL_PIN_READ;
+
+	for(i = 0; i < 16; i++) {
+
+		bit = 0x01 << i;
+
+		if((exti_lowhigh_flags & bit) == bit) {
+			pdo->state = 1;
+		}
+		else if((exti_highlow_flags & bit) == bit) {
+			pdo->state = 0;
+		}
+		else {
+			continue;
+		}
+
+		if(i >= 8) {
+			pdo->pin = PIN_2_0 + (i - 8);
+		}
+		else {
+			pdo->pin = PIN_1_0 + i;
+		}
+
+		outp.crc = packet_calc_crc(&outp);
+		packet_send(&outp);
+	}
+}
+
 int handle_packet_reset(unsigned char length, unsigned char *data)
 {
 	send_status_packet(PACKET_RETURN_ACK);
@@ -43,18 +94,20 @@ int handle_packet_reset(unsigned char length, unsigned char *data)
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void)
 {
-	packet outp;
+//	packet outp;
 
 	int idx;
 
 	unsigned char i;
 	unsigned char bit;
 
+#if 0
 	packet_data_out_digital_pin_read *pdo = (packet_data_out_digital_pin_read *)&outp.data[0];
 
 	outp.start	= PACKET_OUTBOUND_START_IR;
 	outp.length	= 6;
 	outp.type 	= PACKET_OUT_DIGITAL_PIN_READ;
+#endif
 	
 	for(i = 0; i < 8; i++) {
 	
@@ -75,12 +128,24 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 				pin_exti_trigger_count[idx][1] = 0; 
 
+				// set interrupt flag for this bit
+				if((P1IES & bit) == bit) {
+					exti_lowhigh_flags |=  bit;
+					exti_highlow_flags &= ~bit;
+				} 
+				else {
+					exti_lowhigh_flags &= ~bit;
+					exti_highlow_flags |=  bit;
+				}
+				
+#if 0
 				pdo->pin   = PIN_1_0 + i;
 				pdo->state = ((P1IES & bit) ? 0 : 1);
 
 				outp.crc = packet_calc_crc(&outp);
 
 				packet_send_excl(&outp, IRQ);
+#endif
 			}
 		}
 	}
@@ -88,18 +153,20 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void)
 
 interrupt(PORT2_VECTOR) PORT2_ISR(void)
 {
-	packet outp;
+//	packet outp;
 
 	int idx;
 
 	unsigned char i;
 	unsigned char bit;
 
+#if 0
 	packet_data_out_digital_pin_read *pdo = (packet_data_out_digital_pin_read *)&outp.data[0];
 
 	outp.start	= PACKET_OUTBOUND_START_IR;
 	outp.length	= 6;
 	outp.type 	= PACKET_OUT_DIGITAL_PIN_READ;
+#endif
 	
 	for(i = 0; i < 8; i++) {
 	
@@ -119,13 +186,24 @@ interrupt(PORT2_VECTOR) PORT2_ISR(void)
 				}
 
 				pin_exti_trigger_count[idx][1] = 0; 
-
+				//
+				// set interrupt flag for this bit
+				if((P2IES & bit) == bit) {
+					exti_lowhigh_flags |=  (bit << 8);
+					exti_highlow_flags &= ~(bit << 8);
+				} 
+				else {
+					exti_lowhigh_flags &= ~(bit << 8);
+					exti_highlow_flags |=  (bit << 8);
+				}
+#if 0
 				pdo->pin   = PIN_2_0 + i;
 				pdo->state = ((P2IES & bit) ? 0 : 1);
 
 				outp.crc = packet_calc_crc(&outp);
 
 				packet_send_excl(&outp, IRQ);
+#endif
 			}
 		}
 	}

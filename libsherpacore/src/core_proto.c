@@ -37,6 +37,6 @@ void send_status_packet(unsigned char stat)
 	pd->status  = stat;
 	outp.crc	= packet_calc_crc(&outp);
 
-	packet_send_excl(&outp, NONIRQ);
+	packet_send(&outp);
 }
 

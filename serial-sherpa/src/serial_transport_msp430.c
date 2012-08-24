@@ -65,8 +65,12 @@ unsigned char packet_byte_from_rcvq()
 {
 	// wait until data arrived in buffer
 	while(serial_rb_empty(&srx)) {
-		__asm__("nop");
+		// see if external interrupts need to be reported ...
+		process_exti();
 	}
+
+	// see if external interrupts need to be reported ...
+	process_exti();
 
 	return serial_rb_read(&srx);
 }

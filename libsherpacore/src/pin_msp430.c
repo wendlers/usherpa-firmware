@@ -48,6 +48,10 @@ unsigned char pin_curr_func[] = {
 
 unsigned char pin_exti_trigger_count[16][2];
 
+unsigned int exti_lowhigh_flags = 0;
+
+unsigned int exti_highlow_flags = 0;
+
 int pin2port(unsigned char pin) 
 {
 	int port = (0xF0 & pin) >> 4;
