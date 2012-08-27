@@ -6,6 +6,12 @@ LIBDIR  += -L../../libemb/libserial/lib
 LIBDIR  += -L../../libsherpacore/lib
 LIBS	+= -lserial -lsherpacore 
 
+ifndef BAUDRATE 
+BAUDRATE=9600
+endif
+
+CFLAGS = -DBUADRATE_${BAUDRATE}
+
 include ../../common.mk
 
 check: $(SRC)

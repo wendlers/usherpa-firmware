@@ -101,6 +101,12 @@ firmware variants or the tests, see the corresponding README files in the sub-di
 
 NOTE: a pre-compiled version of the firmware and some of the tests could always be found in the top-level "bin" directory".
 
+NOTE: by default, the firmware will be compiled to use 9600 bauds on the serial line for 
+communication. It is also possible to compile for 19200 bauds by setting the BAUDRATE environment
+varaibale:
+
+	BAUDRATE=19200 make
+
 
 Flashing
 --------

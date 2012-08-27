@@ -23,6 +23,7 @@
 #include "serial.h"
 #include "serial_rb.h"
 #include "core_proto.h"
+#include "core_handlers.h"
 #include "packet_handler.h"
 #include "config.h"
 
@@ -44,7 +45,6 @@ void packet_handler_init()
 
     serial_rb_init(&srx, &(srx_buf[0]), RB_SIZE);
     serial_rb_init(&stx, &(stx_buf[0]), RB_SIZE);
-
 
     IE2 |= UCA0RXIE; 
 	__bis_SR_register(GIE);
