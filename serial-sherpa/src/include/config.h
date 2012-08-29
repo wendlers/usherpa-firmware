@@ -28,12 +28,16 @@
 /**
  * Baudrate used for serial communication
  */
-#ifndef BAUDRATE_9600
+#ifdef BAUDRATE_9600
 #define BAUDRATE	 9600
 #endif
 
-#ifndef BAUDRATE_19200
+#ifdef BAUDRATE_19200
 #define BAUDRATE	19200 
+#endif
+
+#ifndef BAUDRATE
+#define BAUDRATE	9600
 #endif
 
 #endif

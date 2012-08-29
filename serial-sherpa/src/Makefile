@@ -10,7 +10,7 @@ ifndef BAUDRATE
 BAUDRATE=9600
 endif
 
-CFLAGS = -DBUADRATE_${BAUDRATE}
+CFLAGS = -DBAUDRATE_${BAUDRATE}
 
 include ../../common.mk
 

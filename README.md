@@ -14,7 +14,7 @@ This README describes, how to compile the firmware binary and flash it to the ta
 
 Visit the following documents for more detailed information about:
 
-* [uSherpa architecture] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/Architecutre.txt)
+* [uSherpa architecture] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/Architecture.txt)
 * [uSherpa core protocol implementation] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/CoreProtocolImplementation.txt)
 * [uSherpa client implementation hints] (https://github.com/wendlers/usherpa-firmware/blob/master/doc/ClientImplementationHints.txt)
 
@@ -70,14 +70,14 @@ Prerequisites
 To compile all the libraries, firmware variants and test firmwares, the following mandatory tools need 
 to be installed on your Linux build-host:
 
-* msp430-gcc for compiling (I use 4.5.3 which is `available on Ubuntu as packet|TODO link to Ubuntu Wiki`)
-* mspdebug for flashing (I use 0.16 which is `available on Ubuntu as packet|TODO link to Ubuntu Wiki`)
-* GNU-make or make (I use GNU make 3.81 which is available also as a pecket on Ubuntu) 
+* msp430-gcc for compiling (I use 4.5.3 which is `available on Ubuntu as packet)
+* mspdebug for flashing (I use 0.16 which is `available on Ubuntu as packet)
+* GNU-make or make (I use GNU make 3.81 which is available also as a packet on Ubuntu) 
 
 To perform some of the extra tasks (like doxygen etc.), the following optional tools need to be installed on your build-host:
 
 * doxygen for creating HTML documentation from the code annotations
-* astyle for code formating
+* astyle for code formatting
 * cppcheck for static code checking
 
 
@@ -94,7 +94,7 @@ To compile all the libraries, firmware variants and test firmware, change to the
 
 	make
 
-This will produce the firmware binares in various formats in the "bin" sub-directory of each variant. i
+This will produce the firmware binaries in various formats in the "bin" sub-directory of each variant. i
 Currently the only firmware variant is the "serial-sherpa" firmware located in the directory "serial-sherpa". 
 It will also produce a bunch of test firmwares located under the "test" directory. For more details on the 
 firmware variants or the tests, see the corresponding README files in the sub-directories. 
@@ -103,7 +103,7 @@ NOTE: a pre-compiled version of the firmware and some of the tests could always 
 
 NOTE: by default, the firmware will be compiled to use 9600 bauds on the serial line for 
 communication. It is also possible to compile for 19200 bauds by setting the BAUDRATE environment
-varaibale:
+variable:
 
 	BAUDRATE=19200 make
 
@@ -127,10 +127,10 @@ This will create the API documentation under "doc/gen/html" within each of the s
 firmwares. 
 
 
-Applying Code Formating Guidelines
+Applying Code Formatting Guidelines
 ----------------------------------
 
-To format all code located in "*.h" and "*.c" files, you could issu the following command in one of the sub-directories:
+To format all code located in "*.h" and "*.c" files, you could issue the following command in one of the sub-directories:
 
 	make style 
 
@@ -151,10 +151,10 @@ This will use "cppcheck" for static code checks and print out the results on the
 Tailoring the Build Settings
 ----------------------------
 
-General build settings (compiler, linker, flags etc.), and settings regarding code formating and static code checks could be 
+General build settings (compiler, linker, flags etc.), and settings regarding code formatting and static code checks could be 
 adjusted in two files on a global basis: 
 
-`common.mk`: This is the common make file shared accross all firmware variants as well as by the test firmware. 
+`common.mk`: This is the common make file shared across all firmware variants as well as by the test firmware. 
 
-`common_lib.mk`: This is the commen make file shared accross all libraries. 
+`common_lib.mk`: This is the common make file shared across all libraries. 
 

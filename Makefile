@@ -36,3 +36,17 @@ gen-docs: lib
 	make -C libemb gen-docs 
 	make -C libsherpacore gen-docs 
 	make -C serial-sherpa gen-docs 
+
+bin-dist: lib 
+	test -d bin || mkdir bin
+	make -C serial-sherpa clean
+	BAUDRATE=9600 make -C serial-sherpa
+	cp serial-sherpa/bin/firmware.bin bin/uSherpa-fw_serial-sherpa_9600b_${TARCH}.bin 
+	cp serial-sherpa/bin/firmware.elf bin/uSherpa-fw_serial-sherpa_9600b_${TARCH}.elf 
+	cp serial-sherpa/bin/firmware.hex bin/uSherpa-fw_serial-sherpa_9600b_${TARCH}.hex
+	make -C serial-sherpa clean
+	BAUDRATE=19200 make -C serial-sherpa
+	cp serial-sherpa/bin/firmware.bin bin/uSherpa-fw_serial-sherpa_19200b_${TARCH}.bin 
+	cp serial-sherpa/bin/firmware.elf bin/uSherpa-fw_serial-sherpa_19200b_${TARCH}.elf 
+	cp serial-sherpa/bin/firmware.hex bin/uSherpa-fw_serial-sherpa_19200b_${TARCH}.hex
+
