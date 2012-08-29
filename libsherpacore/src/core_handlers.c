@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "sherpacore.h"
 
 int handle_packet_null(unsigned char length, unsigned char *data)
@@ -36,10 +35,9 @@ int handle_packet_system_info(unsigned char length, unsigned char *data)
 	outp.length	= 7;
 	outp.type 	= PACKET_OUT_SYSTEM_INFO;
 	
-	// TODO replace 0xCAFFEE with data from constants
-	pd->board_type	= 0xCA;
-	pd->mcu_type	= 0xFF;
-	pd->firmware_rev= 0xEE;
+	pd->board_type	 = BOARD_TYPE;
+	pd->mcu_type	 = MCU_TYPE;
+	pd->firmware_rev = FIRMWARE_REVISION;
 
 	outp.crc	= packet_calc_crc(&outp);
 

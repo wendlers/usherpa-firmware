@@ -17,13 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SHERPACORE_H_
-#define __SHERPACORE_H_
+#ifndef __VERSION_H_
+#define __VERSION_H_
 
-#include "version.h"
-#include "pin.h"
-#include "core_proto.h"
-#include "core_handlers.h"
-#include "packet_handler.h"
+/**
+ * TI Launchpad 
+ */
+#define BOARD_TYPE			0x01	
+
+/**
+ * TI MSP430G2553 
+ */
+#define MCU_TYPE			0x01
+
+/**
+ * Firmware Revision
+ */
+#define FIRMWARE_REVISION	0x01 
 
 #endif
