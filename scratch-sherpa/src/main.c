@@ -26,9 +26,10 @@
 
 #define SCRATCH_DATA_REQUEST	0x01
 
+#define COMM					PIN_1_0
+#define READY					PIN_1_6
 #define BUTTON					PIN_1_3
 #define RESA					PIN_1_4
-#define SLIDER					PIN_1_5
 
 void clock_init(void)
 {
@@ -51,20 +52,19 @@ void setup() {
 	// cio_print("setting up pins\n\r");
 
 	// red led
-	pin_setup(PIN_1_0, PIN_FUNCTION_OUTPUT);
+	pin_setup(COMM, PIN_FUNCTION_OUTPUT);
 
 	// build in button
 	pin_setup(BUTTON, PIN_FUNCTION_INPUT_PULLUP);
 
 	// setup as analog in
-	pin_setup(SLIDER, PIN_FUNCTION_ANALOG_IN);
 	pin_setup(RESA  , PIN_FUNCTION_ANALOG_IN);
 
 	// green led
-	pin_setup(PIN_1_6, PIN_FUNCTION_OUTPUT);
+	pin_setup(READY, PIN_FUNCTION_OUTPUT);
 
 	// show that mcu is ready
-	pin_set(PIN_1_6);
+	pin_set(READY);
 }
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void) {
@@ -88,13 +88,12 @@ void build_scratch_pkt(unsigned char * packet, int channel, int value)
 void send_scratch_pkt(unsigned char* packet)
 {
 	serial_send_blocking(*packet++);
-	delay(400);
 	serial_send_blocking(*packet++);
-	delay(400);
 }
 
 int main(void)
 {
+	unsigned char cnt;
 	unsigned char c; 
 	unsigned char data_packet[] = { 0, 0 }; 
 
@@ -108,29 +107,34 @@ int main(void)
 
 	setup();
 	
+	cnt = 0;
+
 	for(;;) {
 
 		c = serial_recv_blocking();
 
 		if(c == SCRATCH_DATA_REQUEST) {	
 			
-			// blink red led to show data was requested
-			pin_toggle(PIN_1_0);
+			if(cnt++ == 25) {
+				// blink red led to show data was requested
+				pin_toggle(COMM);
+				cnt = 0;
+			}
 
 			// Send the ID packet
 			build_scratch_pkt(data_packet, 15, 0x04);
 			send_scratch_pkt(data_packet);
 			
 			// Read/Report channel 0 (Resistance-D)
-			build_scratch_pkt(data_packet, 0, 1);
+			build_scratch_pkt(data_packet, 0, 0);
 			send_scratch_pkt(data_packet);
 			
 			// Read/Report Channel 1 (Resistance-C)
-			build_scratch_pkt(data_packet, 1, 2);
+			build_scratch_pkt(data_packet, 1, 0);
 			send_scratch_pkt(data_packet);
 
 			// Read/Report Channel 2 (Resistance-B)
-			build_scratch_pkt(data_packet, 2, 3);
+			build_scratch_pkt(data_packet, 2, 0);
 			send_scratch_pkt(data_packet);			
 
 			// Read/Report Channel 3 (Button)
@@ -155,7 +159,7 @@ int main(void)
 			send_scratch_pkt(data_packet);			
 			
 			//Read/Report Channel 7 (Slider)
-			build_scratch_pkt(data_packet, 7, pin_analog_read(SLIDER));
+			build_scratch_pkt(data_packet, 7, 0);
 			send_scratch_pkt(data_packet);		
 		}
 	}
