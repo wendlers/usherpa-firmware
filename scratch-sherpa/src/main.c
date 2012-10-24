@@ -26,6 +26,10 @@
 
 #define SCRATCH_DATA_REQUEST	0x01
 
+#define BUTTON					PIN_1_3
+#define RESA					PIN_1_4
+#define SLIDER					PIN_1_5
+
 void clock_init(void)
 {
 	WDTCTL = WDTPW + WDTHOLD;
@@ -44,30 +48,23 @@ void delay(int d)
 
 void setup() {
 
-	cio_print("setting up pins\n\r");
+	// cio_print("setting up pins\n\r");
 
-/*
-	pin_setup(PIN_1_0, PIN_FUNCTION_INPUT_PULLDOWN); 
-	pin_setup(PIN_1_4, PIN_FUNCTION_INPUT_PULLDOWN); 
-	pin_setup(PIN_1_5, PIN_FUNCTION_INPUT_PULLDOWN); 
-	pin_setup(PIN_1_7, PIN_FUNCTION_INPUT_PULLDOWN); 
+	// red led
+	pin_setup(PIN_1_0, PIN_FUNCTION_OUTPUT);
 
-	pin_exti_function(PIN_1_0, PIN_FUNCTION_EXTI_LOWHIGH, 0); 
-	pin_exti_function(PIN_1_4, PIN_FUNCTION_EXTI_LOWHIGH, 0); 
-	pin_exti_function(PIN_1_5, PIN_FUNCTION_EXTI_LOWHIGH, 0); 
-	pin_exti_function(PIN_1_7, PIN_FUNCTION_EXTI_LOWHIGH, 0); 
+	// build in button
+	pin_setup(BUTTON, PIN_FUNCTION_INPUT_PULLUP);
 
-	pin_setup(PIN_2_0, PIN_FUNCTION_OUTPUT);
-	pin_setup(PIN_2_3, PIN_FUNCTION_OUTPUT);
-	pin_setup(PIN_2_4, PIN_FUNCTION_OUTPUT);
-	pin_setup(PIN_2_5, PIN_FUNCTION_OUTPUT);
+	// setup as analog in
+	pin_setup(SLIDER, PIN_FUNCTION_ANALOG_IN);
+	pin_setup(RESA  , PIN_FUNCTION_ANALOG_IN);
 
-	pin_setup(PIN_1_6, PIN_FUNCTION_PWM);
-	pin_setup(PIN_2_2, PIN_FUNCTION_PWM);
+	// green led
+	pin_setup(PIN_1_6, PIN_FUNCTION_OUTPUT);
 
-	pin_pwm_function(PIN_1_6, 5000);
- 	pin_pwm_control(PIN_1_6, mdc);
-*/
+	// show that mcu is ready
+	pin_set(PIN_1_6);
 }
 
 interrupt(PORT1_VECTOR) PORT1_ISR(void) {
@@ -81,8 +78,8 @@ interrupt(PORT1_VECTOR) PORT1_ISR(void) {
 
 void build_scratch_pkt(unsigned char * packet, int channel, int value)
 {
-	unsigned char upper_data= (unsigned char)((value&(unsigned int)0x380) >> 7);
-	unsigned char lower_data= (unsigned char)(value&0x7f);
+	unsigned char upper_data= (unsigned char)((value & (unsigned int)0x380) >> 7);
+	unsigned char lower_data= (unsigned char)(value & 0x7f);
 
 	*packet++ = ((1 << 7) | (channel << 3) | (upper_data));
 	*packet++ = lower_data;
@@ -106,7 +103,7 @@ int main(void)
 	pin_reserve(PIN_1_1);
 	pin_reserve(PIN_1_2);
 
-	serial_init(9600);
+	serial_init(38400);
 	cio_print("Start\n");
 
 	setup();
@@ -117,6 +114,9 @@ int main(void)
 
 		if(c == SCRATCH_DATA_REQUEST) {	
 			
+			// blink red led to show data was requested
+			pin_toggle(PIN_1_0);
+
 			// Send the ID packet
 			build_scratch_pkt(data_packet, 15, 0x04);
 			send_scratch_pkt(data_packet);
@@ -134,23 +134,28 @@ int main(void)
 			send_scratch_pkt(data_packet);			
 
 			// Read/Report Channel 3 (Button)
-			build_scratch_pkt(data_packet, 3, 4);
+			if(!pin_digital_read(BUTTON)) {
+				build_scratch_pkt(data_packet, 3, 0);
+			}
+			else {
+				build_scratch_pkt(data_packet, 3, 0xFFFF);
+			}
 			send_scratch_pkt(data_packet);	
 			
 			// Read/Report Channel 4 (Resistance-A)
-			build_scratch_pkt(data_packet, 4, 5);
+			build_scratch_pkt(data_packet, 4, pin_analog_read(RESA));
 			send_scratch_pkt(data_packet);		
 
 			// Read/Report Channel 5 (LIGHT)
-			build_scratch_pkt(data_packet, 5, 6);
+			build_scratch_pkt(data_packet, 5, 0);
 			send_scratch_pkt(data_packet);	
 
-			// Read/Report Channel 6(Sound)
-			build_scratch_pkt(data_packet, 6, 7);
+			// Read/Report Channel 6 (Sound)
+			build_scratch_pkt(data_packet, 6, 0);
 			send_scratch_pkt(data_packet);			
 			
-			//Read/Report Channel 7(Slider)
-			build_scratch_pkt(data_packet, 7, 8);
+			//Read/Report Channel 7 (Slider)
+			build_scratch_pkt(data_packet, 7, pin_analog_read(SLIDER));
 			send_scratch_pkt(data_packet);		
 		}
 	}
