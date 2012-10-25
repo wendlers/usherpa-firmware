@@ -407,12 +407,12 @@ int pin_analog_read(unsigned char pin)
 	if((s = pin2port(pin)) < 0) return s;
 	if((s = pin2bit(pin))  < 0) return s;
 
-	// configure channel
-   	ADC10CTL1 = 0xF000 & (pin << 12); 
-
+	ADC10CTL0 &= ~ENC;						// remove flag
+   	ADC10CTL1  = 0xF000 & (pin << 12);		// select channel 
     ADC10CTL0 |= ENC + ADC10SC;             // sample 
-    while (ADC10CTL1 & ADC10BUSY);          // wait while ADC10BUSY
 
+    while (ADC10CTL1 & ADC10BUSY);          // wait while ADC10BUSY
+    	
 	return ADC10MEM;
 }
 
