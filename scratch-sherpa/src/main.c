@@ -41,7 +41,7 @@
 
 #define BAUDRATE				38400
 #define COMM_BLINK_RATE			15
-#define SLIDER_STEPS			10
+#define SLIDER_STEPS			64	
 
 // share same LED for COMM and READY to safe PIN_1_6 for ADC ...
 #define COMM					PIN_1_0
@@ -191,22 +191,17 @@ void setup()
 	pin_exti_function(SLIDER_DWN, PIN_FUNCTION_EXTI_HIGHLOW, 0); 
 	
 	// 1st check if sensors are available (not av. when high)
-	pin_setup(LIGHT, PIN_FUNCTION_INPUT_PULLDOWN);
 	pin_setup(SOUND, PIN_FUNCTION_INPUT_PULLDOWN);
 
-	enable_light = (pin_digital_read(LIGHT) ? 0 : 1);
 	enable_sound = (pin_digital_read(SOUND) ? 0 : 1);
-
-	if(enable_light) {
-		// LIGHT 
-		pin_setup(LIGHT, PIN_FUNCTION_INPUT_FLOAT);
-	}
 
 	if(enable_sound) {
 		// SOUND 
 		pin_setup(SOUND, PIN_FUNCTION_INPUT_FLOAT);
 	}	
 		
+	pin_setup(LIGHT, PIN_FUNCTION_INPUT_PULLDOWN);
+	
 	// show that mcu is ready
 	pin_set(READY);
 }
@@ -220,14 +215,18 @@ void read_samples()
 	// don't smaple slider, value is set by interrupt handler ...
 	// samples.slider.value = 0;
 
-	if(enable_light) {
-		samples.light.value = pin_pulselength_read_dhf(LIGHT);
-	}
+	int s;
 
 	if(enable_sound) {
-		samples.sound.value = pin_pulselength_read_dhf(SOUND);  
+
+		s = pin_pulselength_read_dhf(SOUND);
+
+		while(s > 1023) s = s / 2;
+
+		samples.sound.value = s;  
 	}
 
+	samples.light.value  = (pin_digital_read(LIGHT) ? 0xFFFF : 0);
 	samples.button.value = (pin_digital_read(BUTTON) ? 0xFFFF : 0);
  
 	samples.resa.value   = pin_analog_read(RESA); 
