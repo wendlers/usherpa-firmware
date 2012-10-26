@@ -24,16 +24,20 @@ an external serial to usb converter needs to be connected to P1.1/P1.2 of the La
 [FTDI] (https://www.sparkfun.com/products/718) or
 [Prolific] (https://www.adafruit.com/products/954) will do the job. 
 
-Currently not all of the eight sensors are supported by this firmware. The current mapping is:
+The sensor mapping on the MSP430 is:
 
+	#define BUTTON					PIN_1_3		// Launchpad build in button
+	#define RESA					PIN_1_4		// MSP430 ADC CH4
+	#define RESB					PIN_1_5		// MPS430 ADC CH5
+	#define RESC					PIN_1_6     // MPS430 ADC CH5
+	#define RESD					PIN_1_7     // MPS430 ADC CH5
 
-	#define BUTTON					PIN_1_3
-	#define RESA					PIN_1_4
-	#define RESB					PIN_1_5
-	#define RESC					PIN_1_7
+	// simulate slider with two buttons (soft-slider)
+	#define SLIDER_UP				PIN_2_0		// DIGITAL in w. internal PULLUP
+	#define SLIDER_DWN				PIN_2_1		// DIGITAL in w. internal PULLUP
 
-
-This README describes, how to compile and flash the firmware under Linux.    
+	#define LIGHT					PIN_2_2		// DIGITAL in w. internal PULLDOWN
+	#define SOUND					PIN_2_3		// DIGITAL in, floating, drive high before read (ultrasonnic sensor SRF05)
 
 
 Project Directory Layout
