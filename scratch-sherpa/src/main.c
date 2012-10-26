@@ -32,6 +32,7 @@
  */
 
 #include <msp430.h>
+#include <legacymsp430.h>
 
 #include "serial.h"
 #include "pin.h"
@@ -40,13 +41,30 @@
 
 #define BAUDRATE				38400
 #define COMM_BLINK_RATE			15
+#define SLIDER_STEPS			10
 
+// share same LED for COMM and READY to safe PIN_1_6 for ADC ...
 #define COMM					PIN_1_0
-#define READY					PIN_1_6
+#define READY					PIN_1_0
+
 #define BUTTON					PIN_1_3
 #define RESA					PIN_1_4
 #define RESB					PIN_1_5
-#define RESC					PIN_1_7
+#define RESC					PIN_1_6
+#define RESD					PIN_1_7
+
+// simulate slider with two buttons (soft-slider)
+#define SLIDER_UP				PIN_2_0
+#define SLIDER_DWN				PIN_2_1
+
+#define LIGHT					PIN_2_2
+#define SOUND					PIN_2_3
+
+// light gets disabled on setup if not present
+int enable_light = 1;
+//
+// sound gets disabled on setup if not present
+int enable_sound = 1;
 
 /**
  * Defines a single channel of the Scratch Sensor Board
@@ -143,24 +161,52 @@ void clock_init(void)
  */
 void setup() 
 {
-	// red led
+	// COMM led
 	pin_setup(COMM, PIN_FUNCTION_OUTPUT);
-
-	// build in button
-	pin_setup(BUTTON, PIN_FUNCTION_INPUT_PULLUP);
-
-	// setup as analog in
-	pin_setup(RESA  , PIN_FUNCTION_ANALOG_IN);
 	
-	// setup as analog in
-	pin_setup(RESB  , PIN_FUNCTION_ANALOG_IN);
-
-	// setup as analog in
-	pin_setup(RESC  , PIN_FUNCTION_ANALOG_IN);
-
-	// green led
+	// READY led
 	pin_setup(READY, PIN_FUNCTION_OUTPUT);
 
+	// BUTTON 
+	pin_setup(BUTTON, PIN_FUNCTION_INPUT_PULLUP);
+
+	// RESA 
+	pin_setup(RESA, PIN_FUNCTION_ANALOG_IN);
+	
+	// RESB 
+	pin_setup(RESB, PIN_FUNCTION_ANALOG_IN);
+
+	// RESC 
+	pin_setup(RESC, PIN_FUNCTION_ANALOG_IN);
+
+	// RESC 
+	pin_setup(RESD, PIN_FUNCTION_ANALOG_IN);
+		
+	// SLIDER-UP 
+	pin_setup(SLIDER_UP, PIN_FUNCTION_INPUT_PULLUP);
+	pin_exti_function(SLIDER_UP, PIN_FUNCTION_EXTI_HIGHLOW, 0); 
+
+	// SLIDER-DOWN
+	pin_setup(SLIDER_DWN, PIN_FUNCTION_INPUT_PULLUP);
+	pin_exti_function(SLIDER_DWN, PIN_FUNCTION_EXTI_HIGHLOW, 0); 
+	
+	// 1st check if sensors are available (not av. when high)
+	pin_setup(LIGHT, PIN_FUNCTION_INPUT_PULLDOWN);
+	pin_setup(SOUND, PIN_FUNCTION_INPUT_PULLDOWN);
+
+	enable_light = (pin_digital_read(LIGHT) ? 0 : 1);
+	enable_sound = (pin_digital_read(SOUND) ? 0 : 1);
+
+	if(enable_light) {
+		// LIGHT 
+		pin_setup(LIGHT, PIN_FUNCTION_INPUT_FLOAT);
+	}
+
+	if(enable_sound) {
+		// SOUND 
+		pin_setup(SOUND, PIN_FUNCTION_INPUT_FLOAT);
+	}	
+		
 	// show that mcu is ready
 	pin_set(READY);
 }
@@ -171,21 +217,23 @@ void setup()
 void read_samples() 
 {
 
-	samples.slider.value = 0;
+	// don't smaple slider, value is set by interrupt handler ...
+	// samples.slider.value = 0;
 
-	samples.light.value  = 0;
+	if(enable_light) {
+		samples.light.value = pin_pulselength_read_dhf(LIGHT);
+	}
 
-	samples.sound.value  = 0;  
+	if(enable_sound) {
+		samples.sound.value = pin_pulselength_read_dhf(SOUND);  
+	}
 
 	samples.button.value = (pin_digital_read(BUTTON) ? 0xFFFF : 0);
  
 	samples.resa.value   = pin_analog_read(RESA); 
-
 	samples.resb.value   = pin_analog_read(RESB);  
-
 	samples.resc.value   = pin_analog_read(RESC);  
-
-	samples.resd.value   = 0; 
+	samples.resd.value   = pin_analog_read(RESD); 
 }
 
 /**
@@ -221,6 +269,26 @@ void xmit_samples()
 	xmit_tuple(samples.resb.id  , samples.resb.value);
 	xmit_tuple(samples.resc.id  , samples.resc.value);
 	xmit_tuple(samples.resd.id  , samples.resd.value);
+}
+
+/**
+ * Interrupt handler for slider buttons.
+ */
+interrupt(PORT2_VECTOR) PORT2_ISR(void) {
+
+	// SLIDER_UP pressed
+	if((P2IE & BIT0) == BIT0 && (P2IFG & BIT0) == BIT0) {
+    	P2IFG &= ~BIT0;                 		
+		samples.slider.value -= SLIDER_STEPS;
+		if(samples.slider.value < 0) samples.slider.value = 0;
+	}
+
+	// SLIDER_DWN pressed
+	if((P2IE & BIT1) == BIT1 && (P2IFG & BIT1) == BIT1) {
+    	P2IFG &= ~BIT1;                 		
+		samples.slider.value += SLIDER_STEPS;
+		if(samples.slider.value > 1023) samples.slider.value = 1023;
+	}
 }
 
 /**
