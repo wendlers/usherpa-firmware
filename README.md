@@ -94,8 +94,8 @@ To compile all the libraries, firmware variants and test firmware, change to the
 
 	make
 
-This will produce the firmware binaries in various formats in the "bin" sub-directory of each variant. i
-Currently the only firmware variant is the "serial-sherpa" firmware located in the directory "serial-sherpa". 
+This will produce the firmware binaries in various formats in the "bin" sub-directory of each variant. 
+
 It will also produce a bunch of test firmwares located under the "test" directory. For more details on the 
 firmware variants or the tests, see the corresponding README files in the sub-directories. 
 
@@ -107,6 +107,7 @@ variable:
 
 	BAUDRATE=19200 make
 
+This does not work for the "scratch-sherpa" firmware. Since Scratch is hardcoded to 38400 Bauds, the firmware is also only unsing 38400 Bauds.
 
 Flashing
 --------
@@ -123,9 +124,7 @@ If you installed doxygen on your system, you could generate the HTML-based API d
 
 	make gen-docs
 
-This will create the API documentation under "doc/gen/html" within each of the sub-directories of the libraries and 
-firmwares. 
-
+This will create the API documentation under "doc/gen/html" within each of the sub-directories of the libraries and firmwares.  
 
 Applying Code Formatting Guidelines
 ----------------------------------
