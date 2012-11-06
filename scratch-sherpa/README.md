@@ -71,7 +71,7 @@ The parts used are:
 * 1   x MSP430 [Launchpad] (http://www.ti.com/tool/msp-exp430g2) with MSP430G2553
 * 4   x [Potentiometers] (https://www.sparkfun.com/products/9939) (e.g. 10K, I used some from an old RC-radio)
 * 2-4 x Input [Buttons] (https://www.sparkfun.com/products/97)
-* 1   x Ultrasonic range finder (digital, e.g. Devantech SRF05) 
+* 1   x Ultrasonic range finder (digital, e.g. [Devantech SRF05] (http://www.robotshop.com/devantech-ultrasonic-range-finder-srf05-2.html)) 
 * 1   x [Bumper sensor] (http://www.watterott.com/de/Pololu-Carrier-with-Sharp-GP2Y0D810Z0F-Digital-Distance-Sensor-10cm) (I sue for LIGHT input, could also be replaced by button)
 
 
