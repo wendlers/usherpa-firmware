@@ -64,7 +64,7 @@ easily changed in the file "src/main.c".
 Hardware
 ---------
 
-For an example schematic of the board I use see ./doc/msp430g2553_launchpad_sensorboard.png.
+![Schematic of the board I use] (https://raw.github.com/wendlers/usherpa-firmware/master/scratch-sherpa/doc/msp430g2553_launchpad_sensorboard.png)
 
 The parts used are:
 
