@@ -49,16 +49,17 @@
 
 #define BUTTON					PIN_1_3		// Launchpad build in button
 #define RESA					PIN_1_4		// MSP430 ADC CH4
-#define RESB					PIN_1_5		// MPS430 ADC CH5
-#define RESC					PIN_1_6     // MPS430 ADC CH5
-#define RESD					PIN_1_7     // MPS430 ADC CH5
+#define RESB					PIN_1_5		// MSP430 ADC CH5
+#define RESC					PIN_1_6     // MSP430 ADC CH5
+#define RESD					PIN_1_7     // MSP430 ADC CH5
 
 // simulate slider with two buttons (soft-slider)
-#define SLIDER_UP				PIN_2_0		// DIGITAL in w. internal PULLUP
-#define SLIDER_DWN				PIN_2_1		// DIGITAL in w. internal PULLUP
+#define SLIDER_UP				PIN_2_0		// DIGITAL in w. internal PULL-UP
+#define SLIDER_DWN				PIN_2_1		// DIGITAL in w. internal PULL-UP
 
-#define LIGHT					PIN_2_2		// DIGITAL in w. internal PULLDOWN
-#define SOUND					PIN_2_3		// DIGITAL in, floating, drive high before read (ultrasonnic sensor SRF05)
+#define LIGHT					PIN_2_2		// DIGITAL in w. internal PULL-DOWN
+#define SOUND					PIN_2_3		// DIGITAL in, floating, 
+											// drive high before read (ultrasonnic sensor SRF05)
 
 // light gets disabled on setup if not present
 int enable_light = 1;
